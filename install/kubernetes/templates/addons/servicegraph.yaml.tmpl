@@ -13,6 +13,7 @@ spec:
       annotations:
         sidecar.istio.io/inject: "false"
     spec:
+      serviceAccountName: servicegraph
       containers:
       - name: servicegraph
         image: {MIXER_HUB}/servicegraph:{MIXER_TAG}
@@ -33,4 +34,10 @@ spec:
     port: 8088
   selector:
     app: servicegraph
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: servicegraph
+  namespace: {ISTIO_NAMESPACE}
 ---

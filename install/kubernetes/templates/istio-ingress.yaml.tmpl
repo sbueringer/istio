@@ -66,6 +66,8 @@ spec:
         - "15000"
         - --controlPlaneAuthPolicy
         - NONE #--controlPlaneAuthPolicy
+        - --configPath
+        - /tmp
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
@@ -88,6 +90,8 @@ spec:
         - name: ingress-certs
           mountPath: /etc/istio/ingress-certs
           readOnly: true
+        securityContext:
+          runAsUser: 1337
       volumes:
       - name: istio-certs
         secret:

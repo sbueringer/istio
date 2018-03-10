@@ -158,6 +158,8 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /etc/istio/config
+        securityContext:
+          runAsUser: 1337
       - name: istio-proxy
         image: {PROXY_HUB}/{PROXY_IMAGE}:{PROXY_TAG}
         imagePullPolicy: IfNotPresent
@@ -178,6 +180,8 @@ spec:
         - name: istio-certs
           mountPath: /etc/certs
           readOnly: true
+        securityContext:
+          runAsUser: 1337
       volumes:
       - name: config-volume
         configMap:

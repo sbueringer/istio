@@ -9,6 +9,7 @@ spec:
   ports:
   - name: https-webhook # optional
     port: 443
+    targetPort: 1443
   selector:
     istio: sidecar-injector
 ---
@@ -45,6 +46,7 @@ spec:
             - --meshConfig=/etc/istio/config/mesh
             - --healthCheckInterval=2s
             - --healthCheckFile=/health
+            - --port=1443
           volumeMounts:
           - name: config-volume
             mountPath: /etc/istio/config
@@ -55,24 +57,26 @@ spec:
           - name: inject-config
             mountPath: /etc/istio/inject
             readOnly: true
-          livenessProbe:
-            exec:
-              command:
-                - /usr/local/bin/sidecar-injector
-                - probe
-                - --probe-path=/health
-                - --interval=2s
-            initialDelaySeconds: 4
-            periodSeconds: 4
-          readinessProbe:
-            exec:
-              command:
-                - /usr/local/bin/sidecar-injector
-                - probe
-                - --probe-path=/health
-                - --interval=2s
-            initialDelaySeconds: 4
-            periodSeconds: 4
+          securityContext:
+            runAsUser: 1337
+          #livenessProbe:
+          #  exec:
+          #    command:
+          #      - /usr/local/bin/sidecar-injector
+          #      - probe
+          #      - --probe-path=/health
+          #      - --interval=2s
+          #  initialDelaySeconds: 4
+          #  periodSeconds: 4
+          #readinessProbe:
+          #  exec:
+          #    command:
+          #      - /usr/local/bin/sidecar-injector
+          #      - probe
+          #      - --probe-path=/health
+          #      - --interval=2s
+          #  initialDelaySeconds: 4
+          #  periodSeconds: 4
       volumes:
       - name: config-volume
         configMap:

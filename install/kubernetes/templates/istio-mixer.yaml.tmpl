@@ -68,6 +68,8 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /etc/statsd
+        securityContext:
+          runAsUser: 1337
       - name: mixer
         image: {MIXER_HUB}/mixer:{MIXER_TAG}
         imagePullPolicy: IfNotPresent
@@ -80,6 +82,8 @@ spec:
           - --configStoreURL=k8s://
           - --configDefaultNamespace={ISTIO_NAMESPACE}
           - --trace_zipkin_url=http://zipkin:9411/api/v1/spans
+        securityContext:
+          runAsUser: 1337
       - name: istio-proxy
         image: {PROXY_HUB}/{PROXY_IMAGE}:{PROXY_TAG}
         imagePullPolicy: IfNotPresent
@@ -90,12 +94,14 @@ spec:
         - mixer
         - --controlPlaneAuthPolicy
         - NONE #--controlPlaneAuthPolicy
-        - --customConfigFile
-        - /etc/istio/proxy/envoy_mixer.json
+        - --configPath
+        - /tmp
         volumeMounts:
         - name: istio-certs
           mountPath: /etc/certs
           readOnly: true
+        securityContext:
+          runAsUser: 1337
       volumes:
       - name: istio-certs
         secret:
