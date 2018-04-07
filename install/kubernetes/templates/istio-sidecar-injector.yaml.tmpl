@@ -9,6 +9,7 @@ spec:
   ports:
   - name: https-webhook # optional
     port: 443
+    targetPort: 1443
   selector:
     istio: sidecar-injector
 ---
@@ -46,6 +47,7 @@ spec:
             - --meshConfig=/etc/istio/config/mesh
             - --healthCheckInterval=2s
             - --healthCheckFile=/health
+            - --port=1443
           volumeMounts:
           - name: config-volume
             mountPath: /etc/istio/config
